@@ -1,11 +1,10 @@
-package dev.faceless.swiftlib.lib.storage;
+package dev.faceless.swiftlib.lib.storage.yaml;
 
+import dev.faceless.swiftlib.SwiftLib;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,11 +21,10 @@ public class Config {
      *
      * @param path The path relative to the plugin's data folder where the config file should be located.
      * If the path doesn't exist, it will be created.
-     * @param plugin Plugin instance
      */
-    public Config(String path, JavaPlugin plugin) {
+    public Config(String path) {
         this.path = path.endsWith(".yml") ? path : path + ".yml";
-        this.dataFolder = plugin.getDataFolder();
+        this.dataFolder = SwiftLib.getPluginDataFolder();
         try {
             init();
         } catch (IOException e) {

@@ -40,6 +40,10 @@ public class TextContext {
         builder = new StringBuilder();
     }
 
+    public static TextContext get() {
+        return new TextContext();
+    }
+
     public TextContext add(String txt, TextDecoration... decoration) {
         builder.append(parse(txt, decoration)).append(" ");
         return this;

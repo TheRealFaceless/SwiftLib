@@ -1,6 +1,9 @@
-package dev.faceless.swiftlib.lib.storage;
+package dev.faceless.swiftlib.lib.storage.yaml;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import dev.faceless.swiftlib.SwiftLib;
+import dev.faceless.swiftlib.lib.text.TextUtil;
+import dev.faceless.swiftlib.test.Temporary;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +28,7 @@ public class ConfigManager {
     public void load(JavaPlugin plugin) {
         File dataFolder = plugin.getDataFolder();
         if (dataFolder.exists() && dataFolder.isDirectory()) {
-            loadConfigsFromFolder(dataFolder, plugin, new HashSet<>());
+            loadConfigsFromFolder(dataFolder, new HashSet<>());
         }
     }
 
@@ -33,28 +36,30 @@ public class ConfigManager {
         configs.put(path, config);
     }
 
-    public void createConfig(String path, JavaPlugin plugin) {
-        new Config(path, plugin);
+    public void createConfig(String path) {
+        new Config(path);
     }
 
-    private void loadConfigsFromFolder(File folder, JavaPlugin plugin, Set<File> loadedFiles) {
+    private void loadConfigsFromFolder(File folder, Set<File> loadedFiles) {
         File[] files = folder.listFiles();
         if (files == null) return;
 
         for (File file : files) {
             if (file.isDirectory()) {
-                loadConfigsFromFolder(file, plugin, loadedFiles);
+                loadConfigsFromFolder(file, loadedFiles);
             }else if (file.getName().endsWith(".yml") && !loadedFiles.contains(file)) {
-                String relativePath = file.getPath().replace("plugins" + File.separator + plugin.getName() + File.separator, "");
+                String relativePath = file.getPath().replace("plugins" + File.separator + SwiftLib.getPlugin().getName() + File.separator, "");
 
-                if (isPathBlacklisted(relativePath, blacklistedPaths)) continue;
-                createConfig(relativePath, plugin);
+                if (isPathBlacklisted(relativePath)) continue;
+                createConfig(relativePath);
                 loadedFiles.add(file);
+
+                if(SwiftLib.isDebugMode()) TextUtil.logInfo("Loaded config: (" + file.getName() + ") from (" + relativePath + ")");
             }
         }
     }
 
-    private boolean isPathBlacklisted(String path, Set<String> blacklistedPaths) {
+    private boolean isPathBlacklisted(String path) {
         for (String blacklistedPath : blacklistedPaths) {
             if (path.startsWith(blacklistedPath)) return true;
         }
@@ -65,15 +70,21 @@ public class ConfigManager {
         blacklistedPaths.add(path);
     }
 
+    public void blacklistPaths(String... paths) {
+        Arrays.stream(paths).forEach(this::blacklistPath);
+    }
+
     public void removeBlacklistedPath(String path) {
         blacklistedPaths.remove(path);
     }
 
     public Config createOrGetConfig(String path, JavaPlugin plugin){
-        if (path == null) throw new IllegalArgumentException("Path cannot be null");
+        if (path == null) {
+            throw new IllegalArgumentException("Path cannot be null");
+        }
         if(getConfig(path) != null) return getConfig(path);
 
-        return new Config(path, plugin);
+        return new Config(path);
     }
 
     @Nullable
@@ -90,6 +101,7 @@ public class ConfigManager {
         }
     }
 
+    @Temporary
     public void sendNames() {
         configs.keySet().forEach(name -> Bukkit.getConsoleSender().sendMessage(name));
         configs.values().forEach(config -> Bukkit.getConsoleSender().sendMessage(config.getConfigFile().getAbsolutePath()));

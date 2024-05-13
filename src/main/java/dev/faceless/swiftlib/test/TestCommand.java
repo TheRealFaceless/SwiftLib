@@ -4,8 +4,8 @@ import dev.faceless.swiftlib.SwiftLib;
 import dev.faceless.swiftlib.lib.command.Command;
 import dev.faceless.swiftlib.lib.command.CommandContext;
 import dev.faceless.swiftlib.lib.command.ICommand;
-import dev.faceless.swiftlib.lib.storage.Config;
-import dev.faceless.swiftlib.lib.storage.ConfigManager;
+import dev.faceless.swiftlib.lib.storage.yaml.Config;
+import dev.faceless.swiftlib.lib.storage.yaml.ConfigManager;
 import dev.faceless.swiftlib.lib.text.TextContext;
 import dev.faceless.swiftlib.lib.util.ItemCreator;
 import net.kyori.adventure.text.Component;
@@ -46,7 +46,7 @@ public class TestCommand extends Command {
     public void createconfig(CommandContext context) {
         Player player = context.getSenderAsPlayer();
         if(player == null) return;
-        new Config("players/data/" + player.getName(), SwiftLib.plugin);
+        new Config("players/data/" + player.getName());
     }
 
     @ICommand
