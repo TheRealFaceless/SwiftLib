@@ -11,11 +11,11 @@ import java.io.File;
 import java.util.logging.Logger;
 
 @SuppressWarnings("unused")
-public class SwiftLib {
+public final class SwiftLib {
     private static JavaPlugin plugin;
     private static boolean debugMode = true;
 
-    public void onEnable(JavaPlugin plugin) {
+    public static void onEnable(JavaPlugin plugin) {
         SwiftLib.plugin = plugin;
         ConfigManager.getManager().load(plugin);
 
@@ -24,7 +24,7 @@ public class SwiftLib {
                 .addListener(new MenuListener());
     }
 
-    public void onDisable(JavaPlugin plugin) {
+    public static void onDisable(JavaPlugin plugin) {
         ConfigManager.getManager().saveAll();
     }
 
