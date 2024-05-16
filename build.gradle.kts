@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id ("maven-publish")
 }
 
 group = "dev.faceless.swiftlib"
@@ -31,6 +32,19 @@ tasks.register<Jar>("sourcesJar") {
 tasks.withType(JavaCompile::class.java) {
     options.encoding = "UTF-8"
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "org.gradle.sample"
+            artifactId = "library"
+            version = "1.1"
+
+            from(components["java"])
+        }
+    }
+}
+
 
 
 
