@@ -4,10 +4,11 @@ plugins {
 }
 
 group = "dev.faceless.swiftlib"
-version = "1.0"
+version = "1.1"
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://jitpack.io") }
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
 }
 
