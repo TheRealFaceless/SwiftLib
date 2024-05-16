@@ -5,12 +5,13 @@ import dev.faceless.swiftlib.SwiftLib;
 import dev.faceless.swiftlib.lib.text.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 @CanIgnoreReturnValue
 public class GlobalEventHandler {
     private static GlobalEventHandler eventHandler;
@@ -21,12 +22,9 @@ public class GlobalEventHandler {
         return eventHandler == null ? eventHandler = new GlobalEventHandler() : eventHandler;
     }
 
+    @ApiStatus.Experimental
     public <T extends Event> GlobalEventHandler addListener(Class<T> eventClass, EventPriority priority, Consumer<T> consumer) {
-        Listener listener = new Listener() {
-            @EventHandler public void onEvent(Event event) {
-                if (eventClass.isInstance(event)) consumer.accept(eventClass.cast(event));
-            }
-        };
+        final Listener listener = new Listener() {};
 
         Bukkit.getPluginManager().registerEvent(eventClass, listener, priority, (l, event) -> {
             if (eventClass.isInstance(event)) consumer.accept(eventClass.cast(event));
@@ -42,6 +40,7 @@ public class GlobalEventHandler {
         return this;
     }
 
+    @ApiStatus.Experimental
     public <T extends Event> GlobalEventHandler addListener(Class<T> eventClass, Consumer<T> consumer) {
         addListener(eventClass, EventPriority.NORMAL, consumer);
         return this;

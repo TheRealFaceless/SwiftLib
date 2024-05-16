@@ -2,13 +2,13 @@ package dev.faceless.swiftlib.lib.menu;
 
 import dev.faceless.swiftlib.SwiftLib;
 import dev.faceless.swiftlib.lib.text.TextContext;
-import dev.faceless.swiftlib.lib.text.TextUtil;
 import dev.faceless.swiftlib.lib.util.ItemCreator;
 import dev.faceless.swiftlib.lib.util.MenuUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -17,25 +17,23 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 public abstract class PaginatedMenu {
     private final Component title;
     private final int pageSize;
     private final List<Inventory> pages;
     private final Map<UUID, Integer> viewers;
-    private final int currentPage;
-
-    private static final HashMap<UUID, PaginatedMenu> openMenus = new HashMap<>();
+    private static final Map<UUID, PaginatedMenu> openMenus = new HashMap<>();
 
     public PaginatedMenu(int pageSize, Component title) {
         this.pageSize = pageSize;
         this.title = title;
         this.pages = new ArrayList<>();
         this.viewers = new HashMap<>();
-        this.pages.add(createNewPage(title));
-        this.currentPage = 0;
+        this.pages.add(createNewPage());
     }
 
-    private Inventory createNewPage(Component title) {
+    private Inventory createNewPage() {
         return Bukkit.createInventory(null, pageSize, title);
     }
 
@@ -44,54 +42,102 @@ public abstract class PaginatedMenu {
         int lastPageLastSlotIndex = lastPage.getSize() - 10;
 
         if (lastPage.firstEmpty() == -1 || lastPage.firstEmpty() > lastPageLastSlotIndex) {
-            lastPage = createNewPage(title);
+            lastPage = createNewPage();
             pages.add(lastPage);
         }
         lastPage.addItem(item);
     }
 
+    public void addItemToSlot(int pageIndex, int slot, ItemStack item) {
+        if (pageIndex >= pages.size() || pageIndex < 0) {
+            throw new IndexOutOfBoundsException("Page index out of bounds");
+        }
+        Inventory page = pages.get(pageIndex);
+        page.setItem(slot, item);
+    }
+
     public void remove(ItemStack item) {
-        for (Inventory page : pages) {
-            if (!page.contains(item)) continue;
-            page.remove(item);
-            break;
+        Iterator<Inventory> iterator = pages.iterator();
+        while (iterator.hasNext()) {
+            Inventory page = iterator.next();
+            if (page.contains(item)) {
+                page.remove(item);
+                if (isPageEmpty(page) && pages.size() > 1) iterator.remove();
+                return;
+            }
+        }
+    }
+
+    private boolean isPageEmpty(Inventory page) {
+        for (ItemStack item : page.getContents()) {
+            if (item == null || isPageItem(item) || !item.getType().isItem()) continue;
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isPageItem(ItemStack item) {
+        return item.equals(nextPage()) ||
+                item.equals(prevPage()) ||
+                item.equals(getFiller()) ||
+                isPageCounter(item);
+    }
+
+    public void deleteEmptyPages() {
+        Iterator<Inventory> iterator = pages.iterator();
+        while (iterator.hasNext()) {
+            Inventory page = iterator.next();
+            if (pages.indexOf(page) == 0) continue;
+
+            if (!isPageEmpty(page)) continue;
+            for (UUID playerId : getViewers().keySet()) {
+                Player player = Bukkit.getPlayer(playerId);
+                if (player != null && player.getOpenInventory().getTopInventory().equals(page)) prevPage(player);
+            }
+            iterator.remove();
         }
     }
 
     public Inventory getCurrentPage(Player player) {
-        return pages.get(viewers.getOrDefault(player.getUniqueId(), currentPage));
+        int currentPageIndex = viewers.getOrDefault(player.getUniqueId(), 0);
+        if (pages.isEmpty()) throw new IllegalStateException("Pages is empty");
+
+        return pages.get(Math.min(currentPageIndex, pages.size() - 1));
     }
 
     public void nextPage(Player player) {
-        int current = viewers.getOrDefault(player.getUniqueId(), currentPage);
-        if (current < pages.size() - 1) {
-            viewers.put(player.getUniqueId(), current + 1);
-            addBorder(player);
-            player.openInventory(getCurrentPage(player));
+        int currentPage = viewers.getOrDefault(player.getUniqueId(), 0);
+        if (currentPage < pages.size() - 1) {
+            viewers.put(player.getUniqueId(), currentPage + 1);
+            openPageForPlayer(player);
         }
     }
 
     public void prevPage(Player player) {
-        int current = viewers.getOrDefault(player.getUniqueId(), currentPage);
-        if (current > 0) {
-            viewers.put(player.getUniqueId(), current - 1);
-            addBorder(player);
-            player.openInventory(getCurrentPage(player));
+        int currentPage = viewers.getOrDefault(player.getUniqueId(), 0);
+        if (currentPage > 0) {
+            viewers.put(player.getUniqueId(), currentPage - 1);
+            openPageForPlayer(player);
         }
     }
 
     public void openForPlayer(Player player) {
         viewers.put(player.getUniqueId(), 0);
-        addBorder(player);
-        player.openInventory(getCurrentPage(player));
+        openPageForPlayer(player);
         openMenus.put(player.getUniqueId(), this);
-        onMenuOpen(player);
+        if(!viewers.containsKey(player.getUniqueId())) onMenuOpen(player);
+
     }
 
     public void closeForPlayer(Player player) {
         viewers.remove(player.getUniqueId());
-        onMenuClose(player);
-        if (viewers.isEmpty()) openMenus.remove(player.getUniqueId(), this);
+        if(!viewers.containsKey(player.getUniqueId())) onMenuClose(player);
+        openMenus.remove(player.getUniqueId());
+    }
+
+    private void openPageForPlayer(Player player) {
+        addBorder(player);
+        player.openInventory(getCurrentPage(player));
     }
 
     private void addBorder(Player player) {
@@ -108,7 +154,7 @@ public abstract class PaginatedMenu {
 
     public abstract void onMenuClose(Player player);
 
-    public static HashMap<UUID, PaginatedMenu> getOpenMenus() {
+    public static Map<UUID, PaginatedMenu> getOpenMenus() {
         return openMenus;
     }
 
@@ -131,12 +177,16 @@ public abstract class PaginatedMenu {
 
     public ItemStack pageCounter(Player player) {
         return ItemCreator.get(Material.OAK_SIGN)
-                .setName(TextContext.get().addColored(TextContext.YELLOW, "Page: " + getPage(player)).build().decoration(TextDecoration.ITALIC, false))
+                .setName(TextContext.get().addColored(TextContext.YELLOW, "Page: " + (getPage(player) + 1)).build().decoration(TextDecoration.ITALIC, false))
                 .setPDC(SwiftLib.getPlugin(), "page-counter", PersistentDataType.STRING, "").build();
     }
 
+    public boolean isPageCounter(ItemStack item) {
+        return item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(SwiftLib.getPlugin(), "page-counter"));
+    }
+
     public int getPage(Player player) {
-        return viewers.get(player.getUniqueId());
+        return viewers.getOrDefault(player.getUniqueId(), 0);
     }
 
     protected List<Inventory> getPages() {

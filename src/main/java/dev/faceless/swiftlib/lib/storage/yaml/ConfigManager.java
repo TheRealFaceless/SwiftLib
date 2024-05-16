@@ -90,6 +90,7 @@ public class ConfigManager {
     @Nullable
     public Config getConfig(String path) {
         path = path.replace("/", File.separator);
+        path = path.replace("\\", File.separator);
 
         Config config;
         config = configs.get(path);

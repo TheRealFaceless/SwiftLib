@@ -2,6 +2,7 @@ package dev.faceless.swiftlib.test;
 
 import dev.faceless.swiftlib.lib.menu.PaginatedMenu;
 import dev.faceless.swiftlib.lib.text.TextContext;
+import dev.faceless.swiftlib.lib.text.TextUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -12,12 +13,12 @@ public class TestMenu extends PaginatedMenu {
     private static TestMenu menu;
 
     private TestMenu() {
-        super(36, TextContext.get().add("Test Menu").build());
+        super(54, TextContext.get().add("Test Menu").build());
 
-        for (int i = 0; i < 36; i++) {
+        for (int i = 0; i < 100; i++) {
             ItemStack item = new ItemStack(getRandomMaterial());
             addItem(item);
-            // TextUtil.logInfo("added " + item.getType().name() + "to slot " + i);
+            TextUtil.logInfo("added " + item.getType().name() + "to slot " + i);
         }
     }
 
@@ -33,9 +34,13 @@ public class TestMenu extends PaginatedMenu {
 
     @Override
     public void handleClick(InventoryClickEvent event) {
+        int initialSize = getPages().size();
+        getMenu().deleteEmptyPages();
+        int finalSize = getPages().size();
 
+        event.getWhoClicked().sendMessage("Initial Size: " + initialSize);
+        event.getWhoClicked().sendMessage("Final Size: " + finalSize);
     }
-
 
     @Override
     public void onMenuOpen(Player player) {
