@@ -38,18 +38,16 @@ tasks.withType<JavaCompile> {
 
 publishing {
     publications {
-        create<MavenPublication>("mavenJava") {
+        create<MavenPublication>("maven") {
             from(components["java"])
-            groupId = project.group.toString()
-            artifactId = project.name
-            version = project.version.toString()
         }
-    }
-    repositories {
-        mavenLocal()
     }
 }
 
+tasks.wrapper {
+    gradleVersion = "7.3.3"
+    distributionType = Wrapper.DistributionType.ALL
+}
 
 
 
