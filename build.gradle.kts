@@ -17,7 +17,6 @@ dependencies {
 tasks.assemble {
     dependsOn("sourcesJar")
 }
-
 /*
 tasks.jar {
     val path = "C:\\Users\\Faceless\\Desktop\\Minecraft DevKit\\libraries"
@@ -25,12 +24,16 @@ tasks.jar {
         destinationDirectory.set(file(path))
     }
 }
- */
 
 tasks.register<Jar>("sourcesJar") {
+    val path = "C:\\Users\\Faceless\\Desktop\\Minecraft DevKit\\libraries"
     from(sourceSets["main"].allJava)
     archiveClassifier.set("sources")
+    if (file(path).exists()) {
+        destinationDirectory.set(file(path))
+    }
 }
+ */
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"

@@ -15,6 +15,8 @@ public final class SwiftLib {
     private static JavaPlugin plugin;
     private static boolean debugMode = true;
 
+    private SwiftLib(){}
+
     public static void onEnable(JavaPlugin plugin) {
         SwiftLib.plugin = plugin;
         ConfigManager.getManager().load(plugin);
