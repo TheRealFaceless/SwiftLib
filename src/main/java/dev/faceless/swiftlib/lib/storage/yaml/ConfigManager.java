@@ -89,9 +89,14 @@ public class ConfigManager {
 
     @Nullable
     public Config getConfig(String path) {
-        if(configs.get(path) != null) return configs.get(path);
-        if (!path.endsWith(".yml")) path += ".yml";
-        return configs.get(path);
+        path = path.replace("/", File.separator);
+
+        Config config;
+        config = configs.get(path);
+        if(config == null) path += ".yml";
+        config = configs.get(path);
+        if(config == null) if(SwiftLib.isDebugMode()) TextUtil.logWarning("Attempted to get config from path (" + path + ") but it was null.");
+        return config;
     }
 
     public void reload(String path) {

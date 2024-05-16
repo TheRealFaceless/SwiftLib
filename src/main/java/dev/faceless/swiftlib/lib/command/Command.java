@@ -55,7 +55,7 @@ public class Command extends org.bukkit.command.Command {
             if(!sender.hasPermission(permission)) return true;
         }
         try {
-            method.invoke(this, context);
+            method.invoke(this, context); // INVOKED HERE!
         } catch (IllegalAccessException | InvocationTargetException |
                  CommandException | IllegalArgumentException ignored) {}
         return true;
@@ -105,7 +105,7 @@ public class Command extends org.bukkit.command.Command {
         if (!method.getReturnType().equals(List.class) || !method.getGenericReturnType().getTypeName().equals("java.util.List<java.lang.String>")) return List.of();
         try {
             @SuppressWarnings("unchecked")
-            List<String> completions = (List<String>) method.invoke(this, context);
+            List<String> completions = (List<String>) method.invoke(this, context); // INVOKED HERE!
             return completions;
         } catch (IllegalAccessException | InvocationTargetException |
                  CommandException | IllegalArgumentException ignored) {}

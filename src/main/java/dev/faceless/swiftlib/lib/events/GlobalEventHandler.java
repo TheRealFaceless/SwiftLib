@@ -36,6 +36,12 @@ public class GlobalEventHandler {
         return this;
     }
 
+    public GlobalEventHandler addListener(Listener listener) {
+        Bukkit.getPluginManager().registerEvents(listener, SwiftLib.getPlugin());
+        if(SwiftLib.isDebugMode()) TextUtil.logInfo("Registered new listener -> Class: " + listener.getClass().getSimpleName() + ".class");
+        return this;
+    }
+
     public <T extends Event> GlobalEventHandler addListener(Class<T> eventClass, Consumer<T> consumer) {
         addListener(eventClass, EventPriority.NORMAL, consumer);
         return this;

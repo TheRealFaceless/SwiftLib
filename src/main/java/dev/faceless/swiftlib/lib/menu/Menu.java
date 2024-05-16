@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class Menu {
+public abstract class Menu {
     private static final Map<UUID, Menu> openMenus = new HashMap<>();
     private final Map<Integer, MenuClick> menuClickActions = new HashMap<>();
     private MenuClick generalClickAction;
