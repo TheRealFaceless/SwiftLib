@@ -12,9 +12,10 @@ import java.io.File;
 
 import java.util.logging.Logger;
 
+@SuppressWarnings("unused")
 public class SwiftLib extends JavaPlugin {
     private static JavaPlugin plugin;
-    private static final boolean debugMode = true;
+    private static boolean debugMode = true;
 
     @Override
     public void onEnable() {
@@ -49,5 +50,13 @@ public class SwiftLib extends JavaPlugin {
 
     public static File getPluginDataFolder() {
         return plugin.getDataFolder();
+    }
+
+    public static void setDebugMode(boolean debugMode) {
+        SwiftLib.debugMode = debugMode;
+    }
+
+    public static void setPlugin(JavaPlugin plugin) {
+        SwiftLib.plugin = plugin;
     }
 }
