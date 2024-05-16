@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id ("maven-publish")
+    id("maven-publish")
 }
 
 group = "dev.faceless.swiftlib"
@@ -22,7 +22,9 @@ tasks.assemble {
 
 tasks.jar {
     val path = "C:\\Users\\Faceless\\Desktop\\Minecraft DevKit\\Servers\\Paper 1.20.4\\plugins"
-    if (file(path).exists()) destinationDirectory.set(file(path))
+    if (file(path).exists()) {
+        destinationDirectory.set(file(path))
+    }
 }
 
 tasks.register<Jar>("sourcesJar") {
@@ -30,21 +32,24 @@ tasks.register<Jar>("sourcesJar") {
     archiveClassifier.set("sources")
 }
 
-tasks.withType(JavaCompile::class.java) {
+tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
-            groupId = "org.gradle.sample"
-            artifactId = "library"
-            version = "1.1"
-
+        create<MavenPublication>("mavenJava") {
             from(components["java"])
+            groupId = project.group.toString()
+            artifactId = project.name
+            version = project.version.toString()
         }
     }
+    repositories {
+        mavenLocal()
+    }
 }
+
 
 
 
