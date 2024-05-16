@@ -1,11 +1,9 @@
 package dev.faceless.swiftlib;
 
-import dev.faceless.swiftlib.lib.command.Command;
 import dev.faceless.swiftlib.lib.events.GlobalEventHandler;
 import dev.faceless.swiftlib.lib.listeners.MenuListener;
 import dev.faceless.swiftlib.lib.listeners.PaginatedMenuListener;
 import dev.faceless.swiftlib.lib.storage.yaml.ConfigManager;
-import dev.faceless.swiftlib.test.TestCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -19,15 +17,11 @@ public class SwiftLib {
 
     public void onEnable(JavaPlugin plugin) {
         SwiftLib.plugin = plugin;
-
-        ConfigManager.getManager().blacklistPath("maps\\");
         ConfigManager.getManager().load(plugin);
 
         GlobalEventHandler.get()
                 .addListener(new PaginatedMenuListener())
                 .addListener(new MenuListener());
-
-        Command.register(plugin, new TestCommand());
     }
 
     public void onDisable(JavaPlugin plugin) {
