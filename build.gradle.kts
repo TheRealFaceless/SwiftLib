@@ -14,29 +14,36 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 }
 
-/*
+
 tasks.assemble {
     dependsOn("sourcesJar")
 }
 tasks.jar {
-    val paths = listOf("C:\\Users\\Faceless\\Desktop\\Minecraft DevKit\\libraries",
-        "C:\\Users\\Faceless\\Desktop\\Minecraft DevKit\\Servers\\Paper 1.20.4\\plugins")
+    val path = "C:\\Users\\Faceless\\Desktop\\Minecraft DevKit\\libraries"
+    val default = "${layout.buildDirectory}\\libs"
 
-    paths.forEach { p ->
-        if (file(p).exists()) destinationDirectory.set(file(p))
+    if (file(path).exists()) destinationDirectory.set(file(path))
+    else {
+        destinationDirectory.set(file(default))
+        logger.warn("Default directory $path does not exist.")
     }
 }
 tasks.register<Jar>("sourcesJar") {
     val path = "C:\\Users\\Faceless\\Desktop\\Minecraft DevKit\\libraries"
+    val default = "${layout.buildDirectory}\\libs"
+
     from(sourceSets["main"].allJava)
     archiveClassifier.set("sources")
-    if (file(path).exists()) {
-        destinationDirectory.set(file(path))
+
+    if (file(path).exists()) destinationDirectory.set(file(path))
+    else {
+        destinationDirectory.set(file(default))
+        logger.warn("Default directory $path does not exist.")
     }
 }
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
-*/
+
 
 
