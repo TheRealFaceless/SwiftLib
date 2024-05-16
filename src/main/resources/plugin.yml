@@ -1,5 +1,5 @@
 name: SwiftLib
 author: Faceless
 version: '1.0'
-main: dev.faceless.swiftlib.SwiftLib
+main: dev.faceless.swiftlib.Main
 api-version: '1.20'
