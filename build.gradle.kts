@@ -1,6 +1,5 @@
 plugins {
     id("java")
-    id("maven-publish")
 }
 
 group = "dev.faceless.swiftlib"
@@ -8,7 +7,6 @@ version = "1.1"
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://jitpack.io") }
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
 }
 
@@ -35,20 +33,6 @@ tasks.register<Jar>("sourcesJar") {
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-        }
-    }
-}
-
-tasks.wrapper {
-    gradleVersion = "7.3.3"
-    distributionType = Wrapper.DistributionType.ALL
-}
-
 
 
 

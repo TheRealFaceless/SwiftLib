@@ -13,13 +13,12 @@ import java.io.File;
 import java.util.logging.Logger;
 
 @SuppressWarnings("unused")
-public class SwiftLib extends JavaPlugin {
+public class SwiftLib {
     private static JavaPlugin plugin;
     private static boolean debugMode = true;
 
-    @Override
-    public void onEnable() {
-        plugin = this;
+    public void onEnable(JavaPlugin plugin) {
+        SwiftLib.plugin = plugin;
 
         ConfigManager.getManager().blacklistPath("maps\\");
         ConfigManager.getManager().load(plugin);
@@ -31,8 +30,7 @@ public class SwiftLib extends JavaPlugin {
         Command.register(plugin, new TestCommand());
     }
 
-    @Override
-    public void onDisable() {
+    public void onDisable(JavaPlugin plugin) {
         ConfigManager.getManager().saveAll();
     }
 
