@@ -21,6 +21,8 @@ import java.util.*;
 public abstract class PaginatedMenu {
     private final Component title;
     private final int pageSize;
+    private int maxPages;
+    private boolean enforceMaxPages;
     private final List<Inventory> pages;
     private final Map<UUID, Integer> viewers;
     private static final Map<UUID, PaginatedMenu> openMenus = new HashMap<>();
@@ -33,11 +35,24 @@ public abstract class PaginatedMenu {
         this.pages.add(createNewPage());
     }
 
+    public PaginatedMenu(int pageSize, int maxPages, Component title, boolean createPagesOnInit) {
+        this(pageSize, title);
+        this.maxPages = maxPages;
+        enforceMaxPages = true;
+        if(!createPagesOnInit) return;
+        for(int i = 0; i < maxPages;  i++) addPage();
+    }
+
     private Inventory createNewPage() {
         return Bukkit.createInventory(null, pageSize, title);
     }
 
+    public void addPage() {
+        pages.add(createNewPage());
+    }
+
     public void addItem(ItemStack item) {
+        if(enforceMaxPages) if(pages.size() >= maxPages) throw new IllegalStateException("Attempted to add item to a Paginated Menu with Limited Pages");
         Inventory lastPage = pages.get(pages.size() - 1);
         int lastPageLastSlotIndex = lastPage.getSize() - 10;
 
