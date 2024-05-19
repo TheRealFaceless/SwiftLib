@@ -5,7 +5,6 @@ import dev.faceless.swiftlib.lib.text.TextContext;
 import dev.faceless.swiftlib.lib.util.ItemCreator;
 import dev.faceless.swiftlib.lib.util.MenuUtil;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -33,6 +32,7 @@ public abstract class PaginatedMenu {
         this.pages = new ArrayList<>();
         this.viewers = new HashMap<>();
         this.pages.add(createNewPage());
+        enforceMaxPages = false;
     }
 
     public PaginatedMenu(int pageSize, int maxPages, Component title, boolean createPagesOnInit) {
@@ -175,13 +175,13 @@ public abstract class PaginatedMenu {
 
     public static ItemStack prevPage() {
         return ItemCreator.get(Material.ARROW)
-                .setName(TextContext.get().addColored(TextContext.GREEN, "Previous Page").build().decoration(TextDecoration.ITALIC, false))
+                .setName(TextContext.get().addColored(TextContext.GREEN, "Previous Page").build(false))
                 .setPDC(SwiftLib.getPlugin(), "prev-page", PersistentDataType.STRING, "").build();
     }
 
     public static ItemStack nextPage() {
         return ItemCreator.get(Material.ARROW)
-                .setName(TextContext.get().addColored(TextContext.GREEN, "Next Page").build().decoration(TextDecoration.ITALIC, false))
+                .setName(TextContext.get().addColored(TextContext.GREEN, "Next Page").build(false))
                 .setPDC(SwiftLib.getPlugin(), "next-page", PersistentDataType.STRING, "").build();
     }
 
@@ -192,7 +192,7 @@ public abstract class PaginatedMenu {
 
     public ItemStack pageCounter(Player player) {
         return ItemCreator.get(Material.OAK_SIGN)
-                .setName(TextContext.get().addColored(TextContext.YELLOW, "Page: " + (getPage(player) + 1)).build().decoration(TextDecoration.ITALIC, false))
+                .setName(TextContext.get().addColored(TextContext.YELLOW, "Page: " + (getPage(player) + 1)).build(false))
                 .setPDC(SwiftLib.getPlugin(), "page-counter", PersistentDataType.STRING, "").build();
     }
 

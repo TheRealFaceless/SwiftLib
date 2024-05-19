@@ -6,6 +6,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class TextContext {
 
     private final StringBuilder builder;
@@ -45,19 +46,19 @@ public class TextContext {
     }
 
     public TextContext add(String txt, TextDecoration... decoration) {
-        builder.append(parse(txt, decoration)).append(" ");
+        builder.append(parse(txt, decoration));
         return this;
     }
 
     public TextContext addColored(String color, String txt, TextDecoration... decorations) {
         String coloredTxt = "<" + color + ">" + txt + "</" + color + ">";
-        builder.append(parse(coloredTxt, decorations)).append(" ");
+        builder.append(parse(coloredTxt, decorations));
         return this;
     }
 
     public TextContext addRainbow(String txt, float phase, TextDecoration... decorations) {
         String rainbowTxt = "<rainbow" + (phase != 0 ? ":" + phase : "") + ">" + txt + "</rainbow>";
-        builder.append(parse(rainbowTxt, decorations)).append(" ");
+        builder.append(parse(rainbowTxt, decorations));
         return this;
     }
 
@@ -67,7 +68,7 @@ public class TextContext {
             gradient.append(color).append(":");
         }
         gradient.deleteCharAt(gradient.length() - 1).append(phase != 0 ? ":" + phase : "").append(">").append(txt).append("</gradient>");
-        builder.append(parse(gradient.toString(), decorations)).append(" ");
+        builder.append(parse(gradient.toString(), decorations));
         return this;
     }
 
@@ -77,13 +78,13 @@ public class TextContext {
             transition.append(color).append(":");
         }
         transition.deleteCharAt(transition.length() - 1).append(phase != 0 ? ":" + phase : "").append(">").append(txt).append("</transition>");
-        builder.append(parse(transition.toString(), decorations)).append(" ");
+        builder.append(parse(transition.toString(), decorations));
         return this;
     }
 
     public TextContext addRainbow(String txt, TextDecoration... decorations) {
         String rainbowTxt = "<rainbow>" + txt + "</rainbow>";
-        builder.append(parse(rainbowTxt, decorations)).append(" ");
+        builder.append(parse(rainbowTxt, decorations));
         return this;
     }
 
@@ -93,7 +94,7 @@ public class TextContext {
             gradient.append(color).append(":");
         }
         gradient.deleteCharAt(gradient.length() - 1).append(">").append(txt).append("</gradient>");
-        builder.append(parse(gradient.toString(), decorations)).append(" ");
+        builder.append(parse(gradient.toString(), decorations));
         return this;
     }
 
@@ -103,29 +104,31 @@ public class TextContext {
             transition.append(color).append(":");
         }
         transition.deleteCharAt(transition.length() - 1).append(">").append(txt).append("</transition>");
-        builder.append(parse(transition.toString(), decorations)).append(" ");
+        builder.append(parse(transition.toString(), decorations));
         return this;
     }
 
     public TextContext addClick(String action, String actionValue, String txt, TextDecoration... decorations) {
         String clickTxt = "<click:" + action + ":" + actionValue + ">" + txt + "</click>";
-        builder.append(parse(clickTxt, decorations)).append(" ");
+        builder.append(parse(clickTxt, decorations));
         return this;
     }
 
     public TextContext addHover(String action, String actionValue, String txt, TextDecoration... decorations) {
         String hoverTxt = "<hover:" + action + ":" + actionValue + ">" + txt + "</hover>";
-        builder.append(parse(hoverTxt, decorations)).append(" ");
+        builder.append(parse(hoverTxt, decorations));
         return this;
     }
 
     public Component build() {
-        builder.deleteCharAt(builder.length() - 1);
         return MiniMessage.miniMessage().deserialize(builder.toString());
     }
 
+    public Component build(boolean italics) {
+        return MiniMessage.miniMessage().deserialize(builder.toString()).decoration(TextDecoration.ITALIC, false);
+    }
+
     public String buildAsString() {
-        builder.deleteCharAt(builder.length() - 1);
         return builder.toString();
     }
 
