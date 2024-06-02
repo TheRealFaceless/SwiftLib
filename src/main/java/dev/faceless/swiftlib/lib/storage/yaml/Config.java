@@ -2,12 +2,14 @@ package dev.faceless.swiftlib.lib.storage.yaml;
 
 import dev.faceless.swiftlib.SwiftLib;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 @SuppressWarnings({"ResultOfMethodCallIgnored", "unused"})
 public class Config {
@@ -67,8 +69,16 @@ public class Config {
         save();
     }
 
+    public ConfigurationSection getConfigurationSection(String path) {
+        return config.getConfigurationSection(path);
+    }
+
     public <T> T get(String path, Class<T> type) {
         return type.cast(config.get(path));
+    }
+
+    public Set<String> getKeys(boolean deep) {
+        return config.getKeys(deep);
     }
 
     public boolean contains(String path) {

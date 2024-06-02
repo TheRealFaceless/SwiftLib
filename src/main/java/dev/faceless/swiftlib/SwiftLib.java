@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 @SuppressWarnings("unused")
 public final class SwiftLib {
     private static JavaPlugin plugin;
-    private static boolean debugMode = true;
+    private static boolean debugMode = false;
 
     private SwiftLib(){}
 

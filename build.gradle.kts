@@ -14,7 +14,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 }
 
-/*
+
 tasks.assemble {
     dependsOn("sourcesJar")
 }
@@ -25,7 +25,6 @@ tasks.jar {
     if (file(path).exists()) destinationDirectory.set(file(path))
     else {
         destinationDirectory.set(file(default))
-        logger.warn("Default directory $path does not exist.")
     }
 }
 tasks.register<Jar>("sourcesJar") {

@@ -78,7 +78,7 @@ public class ConfigManager {
         blacklistedPaths.remove(path);
     }
 
-    public Config createOrGetConfig(String path, JavaPlugin plugin){
+    public Config createOrGetConfig(String path){
         if (path == null) {
             throw new IllegalArgumentException("Path cannot be null");
         }

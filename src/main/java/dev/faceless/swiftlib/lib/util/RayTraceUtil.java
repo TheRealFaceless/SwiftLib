@@ -65,7 +65,7 @@ public class RayTraceUtil {
                 return new RayCastResult(null, currentLocation.toVector(), entity, currentLocation.distance(startLocation));
             }
         }
-        return null;
+        return new RayCastResult(null, null, null, 0);
     }
 
     public record RayCastResult(Block hitBlock, Vector hitPosition, Entity hitEntity, double hitDistance) {
