@@ -3,10 +3,12 @@ package dev.faceless.swiftlib.lib.text;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.ChatColor;
 
 import java.util.List;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "deprecated"})
 public class TextContext {
 
     private final StringBuilder builder;
@@ -147,5 +149,13 @@ public class TextContext {
             case STRIKETHROUGH -> "<strikethrough>" + txt + "</strikethrough>";
             case OBFUSCATED -> "<obfuscated>" + txt + "</obfuscated>";
         };
+    }
+
+    public static Component formatLegacy(String text) {
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(text);
+    }
+
+    public static String formatLegacy2(String text) {
+        return ChatColor.translateAlternateColorCodes('&', text);
     }
 }

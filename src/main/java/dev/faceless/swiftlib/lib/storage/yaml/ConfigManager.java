@@ -121,7 +121,7 @@ public class ConfigManager {
         configs.values().forEach(Config::reload);
     }
 
-    public List<String> getConfigs() {
-        return new ArrayList<>(configs.keySet());
+    public List<Config> getConfigs() {
+        return new ArrayList<>(configs.values());
     }
 }

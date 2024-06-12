@@ -73,6 +73,10 @@ public class Config {
         return config.getConfigurationSection(path);
     }
 
+    public File getParentFolder() {
+        return configFile.getParentFile();
+    }
+
     public <T> T get(String path, Class<T> type) {
         return type.cast(config.get(path));
     }
@@ -92,6 +96,4 @@ public class Config {
     public FileConfiguration getConfig() {
         return config;
     }
-
-
 }
