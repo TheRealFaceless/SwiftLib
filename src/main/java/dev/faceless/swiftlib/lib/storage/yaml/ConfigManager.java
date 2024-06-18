@@ -2,7 +2,7 @@ package dev.faceless.swiftlib.lib.storage.yaml;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import dev.faceless.swiftlib.SwiftLib;
-import dev.faceless.swiftlib.lib.text.TextUtil;
+import dev.faceless.swiftlib.lib.text.ConsoleLogger;
 import dev.faceless.swiftlib.test.Temporary;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -54,7 +54,7 @@ public class ConfigManager {
                 createConfig(relativePath);
                 loadedFiles.add(file);
 
-                if(SwiftLib.isDebugMode()) TextUtil.logInfo("Loaded config: (" + file.getName() + ") from (" + relativePath + ")");
+                if(SwiftLib.isDebugMode()) ConsoleLogger.logInfo("Loaded config: (" + file.getName() + ") from (" + relativePath + ")");
             }
         }
     }
@@ -96,7 +96,7 @@ public class ConfigManager {
         config = configs.get(path);
         if(config == null) path += ".yml";
         config = configs.get(path);
-        if(config == null) if(SwiftLib.isDebugMode()) TextUtil.logWarning("Attempted to get config from path (" + path + ") but it was null.");
+        if(config == null) if(SwiftLib.isDebugMode()) ConsoleLogger.logWarning("Attempted to get config from path (" + path + ") but it was null.");
         return config;
     }
 

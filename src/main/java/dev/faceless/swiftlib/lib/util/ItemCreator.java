@@ -1,17 +1,28 @@
 package dev.faceless.swiftlib.lib.util;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.profile.PlayerTextures;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
+import java.util.UUID;
 
+@SuppressWarnings({"deprecation", "unused"})
 public class ItemCreator {
     private ItemStack item;
     private ItemMeta meta;
@@ -40,6 +51,49 @@ public class ItemCreator {
         creator.item = item.clone();
         creator.meta = item.getItemMeta();
         return creator;
+    }
+
+    public static ItemStack getHead(Player player) {
+        ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD, 1);
+        SkullMeta playerHeadMeta = (SkullMeta) playerHead.getItemMeta();
+        playerHeadMeta.setOwner(player.getName());
+        playerHead.setItemMeta(playerHeadMeta);
+        return playerHead;
+    }
+
+    public static ItemStack getHead(OfflinePlayer player) {
+        ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD, 1);
+        SkullMeta playerHeadMeta = (SkullMeta) playerHead.getItemMeta();
+        playerHeadMeta.setOwner(player.getName());
+        playerHead.setItemMeta(playerHeadMeta);
+        return playerHead;
+    }
+
+    public static ItemStack getSkullFromUrl(URL url){
+        UUID uuid = UUID.randomUUID();
+        PlayerProfile profile = Bukkit.createProfile(uuid, "");
+        PlayerTextures textures = profile.getTextures();
+
+        textures.setSkin(url);
+        profile.setTextures(textures);
+
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
+
+        skullMeta.setPlayerProfile(profile);
+        head.setItemMeta(skullMeta);
+        return head;
+    }
+
+    public static URL getURL(String textureUrl) {
+        textureUrl = "http://textures.minecraft.net/texture/" + textureUrl;
+        URL url;
+        try {
+            url = URI.create(textureUrl).toURL();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        return url;
     }
 
     public ItemCreator setName(Component name) {

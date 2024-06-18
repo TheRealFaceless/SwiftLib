@@ -1,7 +1,7 @@
 package dev.faceless.swiftlib.lib.util;
 
 import dev.faceless.swiftlib.SwiftLib;
-import dev.faceless.swiftlib.lib.text.TextUtil;
+import dev.faceless.swiftlib.lib.text.ConsoleLogger;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class WorldManager {
 
     public static World loadWorld(String name) {
@@ -65,7 +66,7 @@ public class WorldManager {
         for (File file : files) deleteFolder(file);
 
         boolean success = folder.delete();
-        if(SwiftLib.isDebugMode()) TextUtil.logWarning("Failed to delete world " + folder.getName());
+        if(SwiftLib.isDebugMode()) ConsoleLogger.logWarning("Failed to delete world " + folder.getName());
         return success;
     }
 

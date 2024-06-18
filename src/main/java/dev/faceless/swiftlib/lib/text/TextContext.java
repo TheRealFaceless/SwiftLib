@@ -8,7 +8,7 @@ import org.bukkit.ChatColor;
 
 import java.util.List;
 
-@SuppressWarnings({"unused", "deprecated"})
+@SuppressWarnings({"unused", "deprecation"})
 public class TextContext {
 
     private final StringBuilder builder;
@@ -29,6 +29,7 @@ public class TextContext {
     public static final String LIGHT_PURPLE = "light_purple";
     public static final String YELLOW = "yellow";
     public static final String WHITE = "white";
+    public static final String RESET = "reset";
 
     public static final String CLICK_OPEN_URL = "open_url";
     public static final String CLICK_RUN_COMMAND = "run_command";
@@ -122,12 +123,30 @@ public class TextContext {
         return this;
     }
 
+    public TextContext addFont(String font, String txt, TextDecoration... decorations) {
+        String fontTxt = "<font:" + font + ">" + txt + "</font>";
+        builder.append(parse(fontTxt, decorations));
+        return this;
+    }
+
+    public TextContext addTranslatable(String key, TextDecoration... decorations) {
+        String translatableTxt = "<lang:" + key + ">";
+        builder.append(parse(translatableTxt, decorations));
+        return this;
+    }
+
+    public TextContext addKeybind(String key, TextDecoration... decorations) {
+        String keybindTxt = "<key:" + key + ">";
+        builder.append(parse(keybindTxt, decorations));
+        return this;
+    }
+
     public Component build() {
         return MiniMessage.miniMessage().deserialize(builder.toString());
     }
 
     public Component build(boolean italics) {
-        return MiniMessage.miniMessage().deserialize(builder.toString()).decoration(TextDecoration.ITALIC, false);
+        return MiniMessage.miniMessage().deserialize(builder.toString()).decoration(TextDecoration.ITALIC, italics);
     }
 
     public String buildAsString() {
@@ -149,6 +168,10 @@ public class TextContext {
             case STRIKETHROUGH -> "<strikethrough>" + txt + "</strikethrough>";
             case OBFUSCATED -> "<obfuscated>" + txt + "</obfuscated>";
         };
+    }
+
+    public static String componentToPlainText(Component component) {
+        return MiniMessage.miniMessage().serialize(component);
     }
 
     public static Component formatLegacy(String text) {

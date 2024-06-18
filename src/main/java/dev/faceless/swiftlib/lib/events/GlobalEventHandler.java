@@ -2,7 +2,7 @@ package dev.faceless.swiftlib.lib.events;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import dev.faceless.swiftlib.SwiftLib;
-import dev.faceless.swiftlib.lib.text.TextUtil;
+import dev.faceless.swiftlib.lib.text.ConsoleLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -28,13 +28,13 @@ public class GlobalEventHandler {
             if (eventClass.isInstance(event)) consumer.accept(eventClass.cast(event));
         }, SwiftLib.getPlugin());
 
-        if(SwiftLib.isDebugMode()) TextUtil.logInfo("Registered new listener -> Class: " + eventClass.getSimpleName() + ".class");
+        if(SwiftLib.isDebugMode()) ConsoleLogger.logInfo("Registered new listener -> Class: " + eventClass.getSimpleName() + ".class");
         return this;
     }
 
     public GlobalEventHandler addListener(Listener listener) {
         Bukkit.getPluginManager().registerEvents(listener, SwiftLib.getPlugin());
-        if(SwiftLib.isDebugMode()) TextUtil.logInfo("Registered new listener -> Class: " + listener.getClass().getSimpleName());
+        if(SwiftLib.isDebugMode()) ConsoleLogger.logInfo("Registered new listener -> Class: " + listener.getClass().getSimpleName());
         return this;
     }
 

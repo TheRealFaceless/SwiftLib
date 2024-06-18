@@ -2,7 +2,7 @@ package dev.faceless.swiftlib.test;
 
 import dev.faceless.swiftlib.lib.menu.PaginatedMenu;
 import dev.faceless.swiftlib.lib.text.TextContext;
-import dev.faceless.swiftlib.lib.text.TextUtil;
+import dev.faceless.swiftlib.lib.text.ConsoleLogger;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -18,7 +18,7 @@ public class TestMenu extends PaginatedMenu {
         for (int i = 0; i < 100; i++) {
             ItemStack item = new ItemStack(getRandomMaterial());
             addItem(item);
-            TextUtil.logInfo("added " + item.getType().name() + "to slot " + i);
+            ConsoleLogger.logInfo("added " + item.getType().name() + "to slot " + i);
         }
     }
 

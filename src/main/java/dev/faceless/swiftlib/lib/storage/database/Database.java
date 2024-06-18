@@ -2,7 +2,8 @@ package dev.faceless.swiftlib.lib.storage.database;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import dev.faceless.swiftlib.SwiftLib;
-import dev.faceless.swiftlib.lib.text.TextUtil;
+import dev.faceless.swiftlib.lib.text.ConsoleLogger;
+import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +11,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@Getter
+@SuppressWarnings("unused")
 @CanIgnoreReturnValue()
 public class Database {
     private final Connection connection;
@@ -19,7 +22,7 @@ public class Database {
         this.type = type;
         try {
             this.connection = connect(url);
-            if(SwiftLib.isDebugMode()) TextUtil.logInfo("Connection established by a database (Url: " + url + ")");
+            if(SwiftLib.isDebugMode()) ConsoleLogger.logInfo("Connection established by a database (Url: " + url + ")");
         }catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -35,14 +38,6 @@ public class Database {
         if (connection != null && !connection.isClosed()) connection.close();
     }
 
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public DatabaseType getType() {
-        return type;
-    }
-
     public static Database createDbFile(String path, DatabaseType type, boolean relativeFromPluginsFolder) throws IOException {
         File file = new File(getFilePath(checkName(type, path), relativeFromPluginsFolder));
         if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
@@ -50,7 +45,7 @@ public class Database {
         }
         if (!file.exists() && !file.createNewFile()) {
             throw new IOException("Failed to create database file " + file.getName());
-        }else if(SwiftLib.isDebugMode()) TextUtil.logInfo("Created or loaded database file: " + file.getName());
+        }else if(SwiftLib.isDebugMode()) ConsoleLogger.logInfo("Created or loaded database file: " + file.getName());
 
         return new Database(type, getConnectionUrl(type, file.getAbsolutePath()));
     }

@@ -1,7 +1,7 @@
 package dev.faceless.swiftlib.lib.command;
 
 import dev.faceless.swiftlib.SwiftLib;
-import dev.faceless.swiftlib.lib.text.TextUtil;
+import dev.faceless.swiftlib.lib.text.ConsoleLogger;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -121,7 +121,7 @@ public class Command extends org.bukkit.command.Command {
                 if(annotation == null) continue;
 
                 if (cachedCommandMethods.containsKey(annotation.name())) {
-                    if (SwiftLib.isDebugMode()) TextUtil.logWarning("Duplicate Command was attempted to be registered.");
+                    if (SwiftLib.isDebugMode()) ConsoleLogger.logWarning("Duplicate Command was attempted to be registered.");
                     continue;
                 }
                 if (annotation.noArgs()) {
@@ -130,7 +130,7 @@ public class Command extends org.bukkit.command.Command {
                 }
                 if(annotation.name() == null || annotation.name().isEmpty() || annotation.name().isBlank()) {
                     if(cachedCommandMethods.containsKey(method.getName())) {
-                        if (SwiftLib.isDebugMode()) TextUtil.logWarning("Duplicate Command was attempted to be registered.");
+                        if (SwiftLib.isDebugMode()) ConsoleLogger.logWarning("Duplicate Command was attempted to be registered.");
                         continue;
                     }
                     cachedCommandMethods.put(method.getName().toLowerCase(), method);
@@ -144,7 +144,7 @@ public class Command extends org.bukkit.command.Command {
                 if(annotation == null) continue;
 
                 if(cachedTabMethods.containsKey(annotation.name())) {
-                    if (SwiftLib.isDebugMode()) TextUtil.logWarning("Duplicate TabCompleter was attempted to be registered.");
+                    if (SwiftLib.isDebugMode()) ConsoleLogger.logWarning("Duplicate TabCompleter was attempted to be registered.");
                     continue;
                 }
                 cachedTabMethods.put(annotation.name().toLowerCase(), method);

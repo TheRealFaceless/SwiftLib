@@ -1,12 +1,13 @@
 package dev.faceless.swiftlib.lib.text;
 
 import dev.faceless.swiftlib.SwiftLib;
+import lombok.Getter;
 
 import java.util.logging.Logger;
 
-public class TextUtil {
+public class ConsoleLogger {
 
-    private static final Logger logger = SwiftLib.getPluginLogger();
+    @Getter private static final Logger logger = SwiftLib.getPluginLogger();
 
     public static void logWarning(String msg) {
         logger.warning(msg);

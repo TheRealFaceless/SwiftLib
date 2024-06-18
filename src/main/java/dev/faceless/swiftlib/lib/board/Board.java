@@ -1,85 +1,100 @@
 package dev.faceless.swiftlib.lib.board;
 
 import dev.faceless.swiftlib.lib.text.TextContext;
+import io.papermc.paper.scoreboard.numbers.NumberFormat;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @SuppressWarnings("unused")
 public class Board {
-
     private final Scoreboard scoreboard;
-    private Objective objective;
-    private final LinkedHashMap<String, Integer> scores;
-    private String title;
+    private final Objective objective;
+    private final List<String> lines;
 
-    public Board(String title) {
-        this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        this.scores = new LinkedHashMap<>();
-        this.objective = scoreboard.registerNewObjective(title, Criteria.DUMMY, TextContext.formatLegacy(title));
-        this.title = title;
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+    private Board(Builder builder) {
+        this.scoreboard = builder.scoreboard;
+        this.objective = builder.objective;
+        this.lines = builder.lines;
     }
 
-    public Board blankLine() {
-        add(" ");
-        return this;
-    }
+    public static class Builder {
+        private final Scoreboard scoreboard;
+        private final Objective objective;
+        private final List<String> lines;
 
-    public Board add(String text) {
-        add(text, null);
-        return this;
-    }
-
-    public Board add(String text, Integer score) {
-        scores.put(text, score);
-        return this;
-    }
-
-    public void setCriteria(Criteria criteria) {
-        if (objective != null) {
-            objective.unregister();
+        public Builder(Component title) {
+            ScoreboardManager manager = Bukkit.getScoreboardManager();
+            this.scoreboard = manager.getNewScoreboard();
+            this.objective = scoreboard.registerNewObjective("dummy", Criteria.DUMMY, title, RenderType.INTEGER);
+            this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+            this.objective.numberFormat(NumberFormat.blank());
+            this.lines = new ArrayList<>();
         }
-        objective = scoreboard.registerNewObjective(title, criteria, TextContext.formatLegacy(title));
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        objective.displayName(TextContext.formatLegacy(title));
-    }
-
-    public void setDisplaySlot(DisplaySlot displaySlot) {
-        objective.setDisplaySlot(displaySlot);
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-        objective.displayName(TextContext.formatLegacy(title));
-    }
-
-    public Board reset() {
-        scores.clear();
-        for (String entry : scoreboard.getEntries()) {
-            scoreboard.resetScores(entry);
+        public Builder addLine(String line) {
+            lines.add(line);
+            return this;
         }
-        return this;
+
+        public Builder blankLine() {
+            lines.add("");
+            return this;
+        }
+
+        public Board build() {
+            int lineNumber = lines.size();
+            for (String line : lines) {
+                Score score = objective.getScore(TextContext.formatLegacy2(line));
+                score.setScore(lineNumber--);
+            }
+            return new Board(this);
+        }
     }
 
-    public void build() {
-        int index = scores.size();
-        for (String text : scores.keySet()) {
-            int score = scores.get(text) != null ? scores.get(text) : index;
+    public void reset() {
+        scoreboard.getEntries().forEach(scoreboard::resetScores);
+        lines.clear();
+    }
 
-            text = TextContext.formatLegacy2(text);
-            Score s1 = objective.getScore(text);
-            s1.setScore(score);
-
-            index -= 1;
-        }
+    public void send(Player player) {
+        player.setScoreboard(scoreboard);
     }
 
     public void send(Player... players) {
-        build();
-        for (Player p : players) p.setScoreboard(scoreboard);
+        Arrays.stream(players).forEach(this::send);
+    }
+
+    public void updateLine(int index, String newLine) {
+        if (index >= 0 && index < lines.size()) {
+            reset();
+            lines.set(index, newLine);
+            int lineNumber = lines.size();
+            for (String line : lines) {
+                Score score = objective.getScore(TextContext.formatLegacy2(line));
+                score.setScore(lineNumber--);
+            }
+        }
+    }
+
+    public void removeLine(int index) {
+        if (index >= 0 && index < lines.size()) {
+            reset();
+            lines.remove(index);
+            int lineNumber = lines.size();
+            for (String line : lines) {
+                Score score = objective.getScore(TextContext.formatLegacy2(line));
+                score.setScore(lineNumber--);
+            }
+        }
+    }
+
+    public List<String> getLines() {
+        return new ArrayList<>(lines);
     }
 }
