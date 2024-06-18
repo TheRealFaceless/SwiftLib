@@ -181,4 +181,9 @@ public class TextContext {
     public static String formatLegacy2(String text) {
         return ChatColor.translateAlternateColorCodes('&', text);
     }
+
+    public static String stripColorCodes(String input) {
+        input = input.replaceAll("(?i)&[0-9A-FK-OR]", "");
+        return input.replaceAll("(?i)§[0-9A-FK-OR]", "");
+    }
 }

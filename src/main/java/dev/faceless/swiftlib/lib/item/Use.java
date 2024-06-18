@@ -82,4 +82,8 @@ public interface Use {
     interface InventoryClick {
         void onInvClick(InventoryClickEvent event, AbstractItem item);
     }
+
+    interface Sneak {
+        void onSneak(PlayerToggleSneakEvent event, AbstractItem item);
+    }
 }

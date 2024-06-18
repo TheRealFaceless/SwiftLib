@@ -219,5 +219,17 @@ public class AbstractItemListener {
             if(abstractItem == null || abstractItem.getDrop() == null) return;
             abstractItem.getInventoryClick().onInvClick(event, abstractItem);
         });
+        eventHandler.addListener(PlayerToggleSneakEvent.class, event-> {
+            ItemStack mainHand = event.getPlayer().getInventory().getItemInMainHand();
+            ItemStack offHand = event.getPlayer().getInventory().getItemInOffHand();
+            AbstractItem abstractItem = null;
+            String idOff = AbstractItem.getIdFromItemStack(offHand);
+            String idMain = AbstractItem.getIdFromItemStack(mainHand);
+            if(idOff != null) abstractItem = AbstractItemManager.getManger().getGameItem(idOff);
+            if(idMain != null) abstractItem = AbstractItemManager.getManger().getGameItem(idMain);
+            if(abstractItem == null) return;
+            if (abstractItem.getSneak() == null) return;
+            abstractItem.getSneak().onSneak(event, abstractItem);
+        });
     }
 }

@@ -40,6 +40,7 @@ public class Command extends org.bukkit.command.Command {
             }
             return true;
         }
+
         String name = args[0].toLowerCase();
         Method method = this.cachedCommandMethods.get(name);
         if(method == null) return true;
@@ -73,6 +74,7 @@ public class Command extends org.bukkit.command.Command {
                         Method method = this.cachedCommandMethods.get(name);
                         ICommand annotation = method.getAnnotation(ICommand.class);
                         if (annotation == null) return false;
+
                         String permission = annotation.permission();
                         return permission.isEmpty() || sender.hasPermission(permission);
                     })

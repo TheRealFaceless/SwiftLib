@@ -33,6 +33,7 @@ public class AbstractItem {
     private Use.Unheld unheld;
     private Use.SwapHand swapHand;
     private Use.InventoryClick inventoryClick;
+    private Use.Sneak sneak;
 
     private final ItemStack item;
     private final String id;
