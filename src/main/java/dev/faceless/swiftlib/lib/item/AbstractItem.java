@@ -80,6 +80,7 @@ public class AbstractItem {
 
         item.setItemMeta(meta);
     }
+
     protected void consumeItemInHand(@NotNull Player player, @NotNull EquipmentSlot hand) {
         ItemStack newItem = player.getInventory().getItem(Objects.requireNonNull(hand));
         if(!player.getGameMode().equals(GameMode.CREATIVE)) newItem.setAmount(newItem.getAmount() - 1);

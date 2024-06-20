@@ -216,7 +216,7 @@ public class AbstractItemListener {
             ItemStack item = event.getCurrentItem();
             String id = AbstractItem.getIdFromItemStack(item);
             AbstractItem abstractItem = AbstractItemManager.getManger().getGameItem(id);
-            if(abstractItem == null || abstractItem.getDrop() == null) return;
+            if(abstractItem == null || abstractItem.getInventoryClick() == null) return;
             abstractItem.getInventoryClick().onInvClick(event, abstractItem);
         });
         eventHandler.addListener(PlayerToggleSneakEvent.class, event-> {

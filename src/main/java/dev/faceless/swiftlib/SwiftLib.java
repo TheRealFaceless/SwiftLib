@@ -13,7 +13,7 @@ import java.io.File;
 
 import java.util.logging.Logger;
 
-//TODO: FIX BOARD, ADD BRIGADIER WRAPPER, COMPLETE TEXTURE PACK API
+//TODO: FIX BOARD, ADD BRIGADIER WRAPPER, COMPLETE TEXTURE PACK API, Add SwapHand event to Abstract Item class.
 @SuppressWarnings("unused")
 public final class SwiftLib {
     @Getter private static JavaPlugin plugin;
