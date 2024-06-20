@@ -4,14 +4,19 @@ import dev.faceless.swiftlib.SwiftLib;
 import dev.faceless.swiftlib.lib.util.PersistentDataContainerStringAdapter;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 @Getter
 @Setter
+@SuppressWarnings("unused")
 public class AbstractItem {
     public static NamespacedKey ABSTRACT_ITEM_KEY = new NamespacedKey(SwiftLib.getPlugin(), "abstract-item-key");
 
@@ -71,5 +76,12 @@ public class AbstractItem {
         adapter.build();
 
         item.setItemMeta(meta);
+    }
+
+    protected void consumeItemOnClick(PlayerInteractEvent event) {
+        event.setCancelled(true);
+        ItemStack newItem = event.getPlayer().getInventory().getItem(Objects.requireNonNull(event.getHand()));
+        if(!event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) newItem.setAmount(newItem.getAmount() - 1);
+        event.getPlayer().getInventory().setItem(Objects.requireNonNull(event.getHand()), newItem);
     }
 }
