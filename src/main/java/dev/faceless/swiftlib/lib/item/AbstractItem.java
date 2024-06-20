@@ -12,6 +12,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -79,26 +80,20 @@ public class AbstractItem {
 
         item.setItemMeta(meta);
     }
-    protected void consumeItemInHand(Player player, EquipmentSlot hand) {
+    protected void consumeItemInHand(@NotNull Player player, @NotNull EquipmentSlot hand) {
         ItemStack newItem = player.getInventory().getItem(Objects.requireNonNull(hand));
         if(!player.getGameMode().equals(GameMode.CREATIVE)) newItem.setAmount(newItem.getAmount() - 1);
         player.getInventory().setItem(Objects.requireNonNull(hand), newItem);
     }
 
-    protected void consumeItemInSlot(Player player, int slot) {
+    protected void consumeItemInSlot(@NotNull Player player, int slot) {
         ItemStack newItem = player.getInventory().getItem(slot);
         if(newItem == null) return;
         if(!player.getGameMode().equals(GameMode.CREATIVE)) newItem.setAmount(newItem.getAmount() - 1);
         player.getInventory().setItem(slot, newItem);
     }
 
-    protected void consumeItemInMainHand(Player player) {
-        ItemStack newItem = player.getInventory().getItemInMainHand();
-        if(!player.getGameMode().equals(GameMode.CREATIVE)) newItem.setAmount(newItem.getAmount() - 1);
-        player.getInventory().setItemInMainHand(newItem);
-    }
-
-    protected void consumeItemOnClick(PlayerInteractEvent event) {
+    protected void consumeItemOnClick(@NotNull PlayerInteractEvent event) {
         event.setCancelled(true);
         ItemStack newItem = event.getPlayer().getInventory().getItem(Objects.requireNonNull(event.getHand()));
         if(!event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) newItem.setAmount(newItem.getAmount() - 1);
