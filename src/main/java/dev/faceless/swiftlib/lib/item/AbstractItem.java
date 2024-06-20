@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -76,6 +78,24 @@ public class AbstractItem {
         adapter.build();
 
         item.setItemMeta(meta);
+    }
+    protected void consumeItemInHand(Player player, EquipmentSlot hand) {
+        ItemStack newItem = player.getInventory().getItem(Objects.requireNonNull(hand));
+        if(!player.getGameMode().equals(GameMode.CREATIVE)) newItem.setAmount(newItem.getAmount() - 1);
+        player.getInventory().setItem(Objects.requireNonNull(hand), newItem);
+    }
+
+    protected void consumeItemInSlot(Player player, int slot) {
+        ItemStack newItem = player.getInventory().getItem(slot);
+        if(newItem == null) return;
+        if(!player.getGameMode().equals(GameMode.CREATIVE)) newItem.setAmount(newItem.getAmount() - 1);
+        player.getInventory().setItem(slot, newItem);
+    }
+
+    protected void consumeItemInMainHand(Player player) {
+        ItemStack newItem = player.getInventory().getItemInMainHand();
+        if(!player.getGameMode().equals(GameMode.CREATIVE)) newItem.setAmount(newItem.getAmount() - 1);
+        player.getInventory().setItemInMainHand(newItem);
     }
 
     protected void consumeItemOnClick(PlayerInteractEvent event) {
