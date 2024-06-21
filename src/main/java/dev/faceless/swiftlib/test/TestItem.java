@@ -12,7 +12,7 @@ import java.util.Objects;
 public class TestItem extends AbstractItem {
 
     public TestItem() {
-        super(ItemCreator.get(Material.BOW).setName(TextContext.get().addColored("gray", "Test Item").build(false)).build(), "test-item");
+        super(ItemCreator.get(Material.BOW).setName(TextContext.get().addColored("gray", "Test Item").build(false)).build(), "test-item", true);
         setLeftClickBlock((event, item) -> event.getPlayer().sendMessage("left click block"));
         setLeftClickAir((event, item) -> event.getPlayer().sendMessage("left click air"));
         setRightClickAir((event, item) -> event.getPlayer().sendMessage("right click air"));

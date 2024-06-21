@@ -46,11 +46,11 @@ public class AbstractItem {
     private final ItemStack item;
     private final String id;
 
-    public AbstractItem(ItemStack item, String id) {
+    public AbstractItem(ItemStack item, String id, boolean register) {
         this.id = id;
         this.item = item;
         addCustomData();
-        AbstractItemManager.getManger().register(this);
+        if(register) AbstractItemManager.getManger().register(this);
     }
 
     public static boolean isAbstractItem(ItemStack item) {

@@ -1,10 +1,13 @@
 package dev.faceless.swiftlib.lib.menu;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,70 +16,31 @@ import java.util.*;
 public abstract class Menu {
     private static final Map<UUID, Menu> openMenus = new HashMap<>();
     private final Map<Integer, MenuClick> menuClickActions = new HashMap<>();
-    private MenuClick generalClickAction;
-    private MenuClick generalInvClickAction;
-    private MenuDrag generalInvDragAction;
-    private MenuDrag generalDragAction;
-    private MenuOpen openAction;
-    private MenuClose closeAction;
-    public final UUID uuid;
-    private final Inventory inventory;
+    @Setter @Getter private MenuClick generalClickAction;
+    @Setter @Getter private MenuClick generalInvClickAction;
+    @Setter @Getter private MenuDrag generalInvDragAction;
+    @Setter @Getter private MenuDrag generalDragAction;
+    @Setter @Getter private MenuOpen openAction;
+    @Setter @Getter private MenuClose closeAction;
+    @Getter public final UUID uuid;
+    @Getter private final Inventory inventory;
 
     public Menu(int size, Component name) {
         uuid = UUID.randomUUID();
         inventory = Bukkit.createInventory(null, size, name);
     }
 
+    public Menu(Component name, InventoryType type) {
+        uuid = UUID.randomUUID();
+        inventory = Bukkit.createInventory(null, type, name);
+    }
+
     public static Menu getMenu(Player p) {
         return openMenus.getOrDefault(p.getUniqueId(), null);
     }
 
-    public UUID getUuid() {
-        return uuid;
-    }
-
     public MenuClick getAction(int index) {
         return menuClickActions.getOrDefault(index, null);
-    }
-
-    public MenuClick getGeneralClickAction() {
-        return generalClickAction;
-    }
-
-    protected void setGeneralClickAction(MenuClick generalClickAction) {
-        this.generalClickAction = generalClickAction;
-    }
-
-    public MenuClick getGeneralInvClickAction() {
-        return generalInvClickAction;
-    }
-
-    protected void setGeneralInvClickAction(MenuClick generalInvClickAction) {
-        this.generalInvClickAction = generalInvClickAction;
-    }
-
-    public MenuDrag getGeneralDragAction() {
-        return generalDragAction;
-    }
-
-    public MenuDrag getGeneralInvDragAction() {
-        return generalInvDragAction;
-    }
-
-    protected void setGeneralDragAction(MenuDrag generalDragAction) {
-        this.generalDragAction = generalDragAction;
-    }
-
-    public void setGeneralInvDragAction(MenuDrag generalInvDragAction) {
-        this.generalInvDragAction = generalInvDragAction;
-    }
-
-    protected void setOpenAction(MenuOpen openAction) {
-        this.openAction = openAction;
-    }
-
-    protected void setCloseAction(MenuClose closeAction) {
-        this.closeAction = closeAction;
     }
 
     public void setItem(int index, ItemStack item) {
@@ -87,10 +51,6 @@ public abstract class Menu {
         inventory.setItem(index, item);
         if (action == null) menuClickActions.remove(index);
         else menuClickActions.put(index, action);
-    }
-
-    public Inventory getInventory() {
-        return inventory;
     }
 
     public void open(Player p) {
