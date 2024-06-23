@@ -1,6 +1,7 @@
 package dev.faceless.swiftlib.lib.storage.yaml;
 
 import dev.faceless.swiftlib.SwiftLib;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -15,8 +16,8 @@ import java.util.Set;
 public class Config {
 
     private final String path;
-    private FileConfiguration config;
-    private File configFile;
+    @Getter private FileConfiguration config;
+    @Getter private File configFile;
     private final File dataFolder;
 
     /**
@@ -69,6 +70,11 @@ public class Config {
         save();
     }
 
+    public void set(String path, Object value, boolean save) {
+        config.set(path, value);
+        if(save) save();
+    }
+
     public ConfigurationSection getConfigurationSection(String path) {
         return config.getConfigurationSection(path);
     }
@@ -77,8 +83,25 @@ public class Config {
         return configFile.getParentFile();
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T get(String path, Class<T> type) {
-        return type.cast(config.get(path));
+        Object value = switch (type.getSimpleName()) {
+            case "Integer" -> config.getInt(path);
+            case "Long" -> config.getLong(path);
+            case "Double" -> config.getDouble(path);
+            case "Boolean" -> config.getBoolean(path);
+            case "String" -> config.getString(path);
+            case "List" -> config.getList(path);
+            case "Float" -> (float) config.getDouble(path);
+            case "Short" -> (short) config.getInt(path);
+            case "Byte" -> (byte) config.getInt(path);
+            case "Map" -> {
+                ConfigurationSection section = config.getConfigurationSection(path);
+                yield (section != null) ? section.getValues(false) : null;
+            }
+            default -> config.get(path);
+        };
+        return (T) value;
     }
 
     public Set<String> getKeys(boolean deep) {
@@ -89,11 +112,4 @@ public class Config {
         return config.contains(path);
     }
 
-    public File getConfigFile() {
-        return configFile;
-    }
-
-    public FileConfiguration getConfig() {
-        return config;
-    }
 }
