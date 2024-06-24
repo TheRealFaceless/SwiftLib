@@ -4,6 +4,7 @@ import dev.faceless.swiftlib.SwiftLib;
 import dev.faceless.swiftlib.lib.text.TextContext;
 import dev.faceless.swiftlib.lib.util.ItemCreator;
 import dev.faceless.swiftlib.lib.util.MenuUtil;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,7 +25,7 @@ public abstract class PaginatedMenu {
     private boolean enforceMaxPages;
     private final List<Inventory> pages;
     private final Map<UUID, Integer> viewers;
-    private static final Map<UUID, PaginatedMenu> openMenus = new HashMap<>();
+    @Getter private static final Map<UUID, PaginatedMenu> openMenus = new HashMap<>();
 
     public PaginatedMenu(int pageSize, Component title) {
         this.pageSize = pageSize;
@@ -169,19 +170,15 @@ public abstract class PaginatedMenu {
 
     public abstract void onMenuClose(Player player);
 
-    public static Map<UUID, PaginatedMenu> getOpenMenus() {
-        return openMenus;
-    }
-
     public static ItemStack prevPage() {
         return ItemCreator.get(Material.ARROW)
-                .setName(TextContext.get().addColored(TextContext.GREEN, "Previous Page").build(false))
+                .setName(TextContext.get().colored(TextContext.GREEN, "Previous Page").build(false))
                 .setPDC(SwiftLib.getPlugin(), "prev-page", PersistentDataType.STRING, "").build();
     }
 
     public static ItemStack nextPage() {
         return ItemCreator.get(Material.ARROW)
-                .setName(TextContext.get().addColored(TextContext.GREEN, "Next Page").build(false))
+                .setName(TextContext.get().colored(TextContext.GREEN, "Next Page").build(false))
                 .setPDC(SwiftLib.getPlugin(), "next-page", PersistentDataType.STRING, "").build();
     }
 
@@ -192,7 +189,7 @@ public abstract class PaginatedMenu {
 
     public ItemStack pageCounter(Player player) {
         return ItemCreator.get(Material.OAK_SIGN)
-                .setName(TextContext.get().addColored(TextContext.YELLOW, "Page: " + (getPage(player) + 1)).build(false))
+                .setName(TextContext.get().colored(TextContext.YELLOW, "Page: " + (getPage(player) + 1)).build(false))
                 .setPDC(SwiftLib.getPlugin(), "page-counter", PersistentDataType.STRING, "").build();
     }
 

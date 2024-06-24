@@ -48,24 +48,124 @@ public class TextContext {
         return new TextContext();
     }
 
-    public TextContext add(String txt, TextDecoration... decoration) {
-        builder.append(parse(txt, decoration));
+    public TextContext text(String txt, TextDecoration... decorations) {
+        builder.append(parse(txt, decorations));
         return this;
     }
 
-    public TextContext addColored(String color, String txt, TextDecoration... decorations) {
+    public TextContext black(String txt, TextDecoration... decorations) {
+        return colored(BLACK, txt, decorations);
+    }
+
+    public TextContext darkBlue(String txt, TextDecoration... decorations) {
+        return colored(DARK_BLUE, txt, decorations);
+    }
+
+    public TextContext darkGreen(String txt, TextDecoration... decorations) {
+        return colored(DARK_GREEN, txt, decorations);
+    }
+
+    public TextContext darkAqua(String txt, TextDecoration... decorations) {
+        return colored(DARK_AQUA, txt, decorations);
+    }
+
+    public TextContext darkRed(String txt, TextDecoration... decorations) {
+        return colored(DARK_RED, txt, decorations);
+    }
+
+    public TextContext darkPurple(String txt, TextDecoration... decorations) {
+        return colored(DARK_PURPLE, txt, decorations);
+    }
+
+    public TextContext gold(String txt, TextDecoration... decorations) {
+        return colored(GOLD, txt, decorations);
+    }
+
+    public TextContext gray(String txt, TextDecoration... decorations) {
+        return colored(GRAY, txt, decorations);
+    }
+
+    public TextContext darkGray(String txt, TextDecoration... decorations) {
+        return colored(DARK_GRAY, txt, decorations);
+    }
+
+    public TextContext blue(String txt, TextDecoration... decorations) {
+        return colored(BLUE, txt, decorations);
+    }
+
+    public TextContext green(String txt, TextDecoration... decorations) {
+        return colored(GREEN, txt, decorations);
+    }
+
+    public TextContext aqua(String txt, TextDecoration... decorations) {
+        return colored(AQUA, txt, decorations);
+    }
+
+    public TextContext red(String txt, TextDecoration... decorations) {
+        return colored(RED, txt, decorations);
+    }
+
+    public TextContext light_purple(String txt, TextDecoration... decorations) {
+        return colored(LIGHT_PURPLE, txt, decorations);
+    }
+
+    public TextContext yellow(String txt, TextDecoration... decorations) {
+        return colored(YELLOW, txt, decorations);
+    }
+
+    public TextContext white(String txt, TextDecoration... decorations) {
+        return colored(WHITE, txt, decorations);
+    }
+
+    public TextContext reset(String txt, TextDecoration... decorations) {
+        return colored(RESET, txt, decorations);
+    }
+
+    public TextContext clickOpenUrl(String url, String txt) {
+        return click(CLICK_OPEN_URL, url, txt);
+    }
+
+    public TextContext clickRunCommand(String command, String txt) {
+        return click(CLICK_RUN_COMMAND, command, txt);
+    }
+
+    public TextContext clickSuggestCommand(String command, String txt) {
+        return click(CLICK_SUGGEST_COMMAND, command, txt);
+    }
+
+    public TextContext clickChangePage(String value, String txt) {
+        return click(CLICK_CHANGE_PAGE, value, txt);
+    }
+
+    public TextContext clickOpenUrl(String url, String color, String txt) {
+        return click(CLICK_OPEN_URL, url, color, txt);
+    }
+
+    public TextContext clickRunCommand(String command, String color, String txt) {
+        return click(CLICK_RUN_COMMAND, command, color, txt);
+    }
+
+    public TextContext clickSuggestCommand(String command, String color, String txt) {
+        return click(CLICK_SUGGEST_COMMAND, command, color, txt);
+    }
+
+    public TextContext clickChangePage(String value, String color, String txt) {
+        return click(CLICK_CHANGE_PAGE, value, color, txt);
+    }
+
+    public TextContext colored(String color, String txt, TextDecoration... decorations) {
         String coloredTxt = "<" + color + ">" + txt + "</" + color + ">";
         builder.append(parse(coloredTxt, decorations));
         return this;
     }
 
-    public TextContext addRainbow(String txt, float phase, TextDecoration... decorations) {
+    public TextContext rainbow(String txt, float phase, TextDecoration... decorations) {
         String rainbowTxt = "<rainbow" + (phase != 0 ? ":" + phase : "") + ">" + txt + "</rainbow>";
         builder.append(parse(rainbowTxt, decorations));
         return this;
     }
 
-    public TextContext addGradient(String txt, List<String> colors, float phase, TextDecoration... decorations) {
+    public TextContext gradient(String txt, List<String> colors, float phase, TextDecoration... decorations) {
         StringBuilder gradient = new StringBuilder("<gradient:");
         for (String color : colors) {
             gradient.append(color).append(":");
@@ -75,7 +175,7 @@ public class TextContext {
         return this;
     }
 
-    public TextContext addTransition(String txt, List<String> colors, float phase, TextDecoration... decorations) {
+    public TextContext transition(String txt, List<String> colors, float phase, TextDecoration... decorations) {
         StringBuilder transition = new StringBuilder("<transition:");
         for (String color : colors) {
             transition.append(color).append(":");
@@ -85,13 +185,13 @@ public class TextContext {
         return this;
     }
 
-    public TextContext addRainbow(String txt, TextDecoration... decorations) {
+    public TextContext rainbow(String txt, TextDecoration... decorations) {
         String rainbowTxt = "<rainbow>" + txt + "</rainbow>";
         builder.append(parse(rainbowTxt, decorations));
         return this;
     }
 
-    public TextContext addGradient(String txt, List<String> colors, TextDecoration... decorations) {
+    public TextContext gradient(String txt, List<String> colors, TextDecoration... decorations) {
         StringBuilder gradient = new StringBuilder("<gradient:");
         for (String color : colors) {
             gradient.append(color).append(":");
@@ -101,7 +201,7 @@ public class TextContext {
         return this;
     }
 
-    public TextContext addTransition(String txt, List<String> colors, TextDecoration... decorations) {
+    public TextContext transition(String txt, List<String> colors, TextDecoration... decorations) {
         StringBuilder transition = new StringBuilder("<transition:");
         for (String color : colors) {
             transition.append(color).append(":");
@@ -111,31 +211,37 @@ public class TextContext {
         return this;
     }
 
-    public TextContext addClick(String action, String actionValue, String txt, TextDecoration... decorations) {
+    public TextContext click(String action, String actionValue, String txt, TextDecoration... decorations) {
         String clickTxt = "<click:" + action + ":" + actionValue + ">" + txt + "</click>";
         builder.append(parse(clickTxt, decorations));
         return this;
     }
 
-    public TextContext addHover(String action, String actionValue, String txt, TextDecoration... decorations) {
+    public TextContext click(String action, String actionValue, String color, String txt, TextDecoration... decorations) {
+        String clickTxt = "<click:" + action + ":" + actionValue + ">" + txt + "</click>";
+        clickTxt = parse(txt, decorations);
+        return colored(color, clickTxt);
+    }
+
+    public TextContext hover(String action, String actionValue, String txt, TextDecoration... decorations) {
         String hoverTxt = "<hover:" + action + ":" + actionValue + ">" + txt + "</hover>";
         builder.append(parse(hoverTxt, decorations));
         return this;
     }
 
-    public TextContext addFont(String font, String txt, TextDecoration... decorations) {
+    public TextContext font(String font, String txt, TextDecoration... decorations) {
         String fontTxt = "<font:" + font + ">" + txt + "</font>";
         builder.append(parse(fontTxt, decorations));
         return this;
     }
 
-    public TextContext addTranslatable(String key, TextDecoration... decorations) {
+    public TextContext translatable(String key, TextDecoration... decorations) {
         String translatableTxt = "<lang:" + key + ">";
         builder.append(parse(translatableTxt, decorations));
         return this;
     }
 
-    public TextContext addKeybind(String key, TextDecoration... decorations) {
+    public TextContext keybind(String key, TextDecoration... decorations) {
         String keybindTxt = "<key:" + key + ">";
         builder.append(parse(keybindTxt, decorations));
         return this;

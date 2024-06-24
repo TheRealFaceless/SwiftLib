@@ -24,10 +24,10 @@ public class TestCommand extends Command {
     public void test(CommandContext context) {
         CommandSender sender = context.sender();
         Component msg = new TextContext()
-                .addColored("#FF5555", "hello")
-                .addColored("#FF5500", "world")
-                .addClick(TextContext.CLICK_RUN_COMMAND, "/up 5",
-                        new TextContext().addHover(TextContext.HOVER_SHOW_TEXT, "ascend 5 blocks", new TextContext().addGradient("|||||||||", List.of("#FF0000", "#00FF00")).buildAsString()).buildAsString(), TextDecoration.UNDERLINED, TextDecoration.BOLD)
+                .colored("#FF5555", "hello")
+                .colored("#FF5500", "world")
+                .click(TextContext.CLICK_RUN_COMMAND, "/up 5",
+                        new TextContext().hover(TextContext.HOVER_SHOW_TEXT, "ascend 5 blocks", new TextContext().gradient("|||||||||", List.of("#FF0000", "#00FF00")).buildAsString()).buildAsString(), TextDecoration.UNDERLINED, TextDecoration.BOLD)
                 .build();
         sender.sendMessage(msg);
     }

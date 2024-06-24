@@ -13,7 +13,7 @@ public class TestMenu extends PaginatedMenu {
     private static TestMenu menu;
 
     private TestMenu() {
-        super(54, TextContext.get().add("Test Menu").build());
+        super(54, TextContext.get().text("Test Menu").build());
 
         for (int i = 0; i < 100; i++) {
             ItemStack item = new ItemStack(getRandomMaterial());
