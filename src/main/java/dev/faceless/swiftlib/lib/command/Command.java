@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,19 +34,50 @@ public class Command extends org.bukkit.command.Command {
         if(args.length == 0) {
             Method method = this.cachedCommandMethods.get("noArgs");
             if(method == null) return true;
+            if(method.getParameterCount() != 1) return true;
+            ICommand annotation = method.getAnnotation(ICommand.class);
+            String permission = null;
+            if(annotation != null) {
+                if(!annotation.permission().isEmpty() || !annotation.permission().isBlank()) permission = annotation.permission();
+            }
+
+            if(permission != null) {
+                if(!sender.hasPermission(permission)) return true;
+            }
             try {
                 method.invoke(this, context);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
             return true;
+        } else {
+            Method method = this.cachedCommandMethods.get("allArgs");
+            if(method == null) return true;
+            if(method.getParameterCount() == 1) {
+                ICommand annotation = method.getAnnotation(ICommand.class);
+                String permission = null;
+                if(annotation != null) {
+                    if(!annotation.permission().isEmpty() || !annotation.permission().isBlank()) permission = annotation.permission();
+                }
+
+                if(permission != null) {
+                    if(sender.hasPermission(permission)) {
+                        try {
+                            method.invoke(this, context);
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+
+            }
         }
 
         String name = args[0].toLowerCase();
         Method method = this.cachedCommandMethods.get(name);
         if(method == null) return true;
 
-        if(method.getParameterCount() > 1) return true;
+        if(method.getParameterCount() != 1) return true;
         ICommand annotation = method.getAnnotation(ICommand.class);
         String permission = null;
         if(annotation != null) {
@@ -66,21 +98,63 @@ public class Command extends org.bukkit.command.Command {
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
         CommandContext context = new CommandContext(sender, this, args);
 
+        List<String> allArgsCompletions = new ArrayList<>();
+        if(cachedCommandMethods.get("allArgs") != null) {
+            Method commandMethod = cachedCommandMethods.get("allArgs");
+            Method method = null;
+            if(commandMethod != null) {
+                ICommand annotation = commandMethod.getAnnotation(ICommand.class);
+                if (annotation != null) {
+                    if(!annotation.tabCompleter().isEmpty() || !annotation.tabCompleter().isBlank()) {
+                        String tabCompleter = annotation.tabCompleter().toLowerCase();
+
+                        Method tabMethod = this.cachedTabMethods.get(tabCompleter);
+                        if(tabMethod != null) {
+                            method = tabMethod;
+                        }
+                    }else {
+                        Method tabMethod = this.cachedTabMethods.get("allArgs");
+                        if(tabMethod != null) {
+                            method = tabMethod;
+                        }
+                    }
+                    if(method != null) {
+                        if (!method.getReturnType().equals(List.class) || !method.getGenericReturnType().getTypeName().equals("java.util.List<java.lang.String>")) return List.of();
+                        try {
+                            @SuppressWarnings("unchecked")
+                            List<String> completions = (List<String>) method.invoke(this, context); // INVOKED HERE!
+                            allArgsCompletions.addAll(completions);
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }
+
         if(args.length == 1) {
-            return this.cachedCommandMethods.keySet()
-                    .stream()
+            List<String> completions = new ArrayList<>(cachedCommandMethods.keySet());
+            completions.addAll(allArgsCompletions);
+            return completions.stream()
                     .filter(name -> !name.equals("noArgs"))
+                    .filter(name -> !name.equals("allArgs"))
                     .filter(name -> {
                         Method method = this.cachedCommandMethods.get(name);
+                        if(method == null) {
+                            method = this.cachedCommandMethods.get("allArgs");
+                            if(method == null) return true;
+                        }
                         ICommand annotation = method.getAnnotation(ICommand.class);
-                        if (annotation == null) return false;
+                        if (annotation == null) return true;
 
                         String permission = annotation.permission();
-                        return permission.isEmpty() || sender.hasPermission(permission);
+                        if(permission.isEmpty() || permission.isBlank()) return true;
+                        return sender.hasPermission(permission);
                     })
                     .filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
                     .toList();
         }
+
 
         String subcommand = args[0].toLowerCase();
         Method method;
@@ -108,6 +182,7 @@ public class Command extends org.bukkit.command.Command {
         try {
             @SuppressWarnings("unchecked")
             List<String> completions = (List<String>) method.invoke(this, context); // INVOKED HERE!
+            completions.addAll(allArgsCompletions);
             return completions;
         } catch (IllegalAccessException | InvocationTargetException |
                  CommandException | IllegalArgumentException ignored) {}
@@ -128,6 +203,10 @@ public class Command extends org.bukkit.command.Command {
                 }
                 if (annotation.noArgs()) {
                     cachedCommandMethods.put("noArgs", method);
+                    continue;
+                }
+                if (annotation.allArgs()) {
+                    cachedCommandMethods.put("allArgs", method);
                     continue;
                 }
                 if(annotation.name() == null || annotation.name().isEmpty() || annotation.name().isBlank()) {

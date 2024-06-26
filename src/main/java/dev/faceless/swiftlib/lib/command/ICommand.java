@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+@SuppressWarnings("unused")
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ICommand {
@@ -13,4 +14,5 @@ public @interface ICommand {
     String tabCompleter() default "";
     int cooldown() default 1;
     boolean noArgs() default false;
+    boolean allArgs() default false;
 }

@@ -219,7 +219,7 @@ public class TextContext {
 
     public TextContext click(String action, String actionValue, String color, String txt, TextDecoration... decorations) {
         String clickTxt = "<click:" + action + ":" + actionValue + ">" + txt + "</click>";
-        clickTxt = parse(txt, decorations);
+        clickTxt = parse(clickTxt, decorations);
         return colored(color, clickTxt);
     }
 
@@ -278,6 +278,10 @@ public class TextContext {
 
     public static String componentToPlainText(Component component) {
         return MiniMessage.miniMessage().serialize(component);
+    }
+
+    public static Component format(String text) {
+        return MiniMessage.miniMessage().deserialize(text);
     }
 
     public static Component formatLegacy(String text) {
