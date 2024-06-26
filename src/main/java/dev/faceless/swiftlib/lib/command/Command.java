@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+// Proceed with caution!
 public class Command extends org.bukkit.command.Command {
 
     private final HashMap<String, Method> cachedCommandMethods;
