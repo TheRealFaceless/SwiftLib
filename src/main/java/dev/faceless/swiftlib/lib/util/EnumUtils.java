@@ -17,4 +17,17 @@ public class EnumUtils {
 
         return humanReadableName.toString();
     }
+
+    public static <T extends Enum<T>> T findClosestEnum(String input, T[] values) {
+        int minDistance = Integer.MAX_VALUE;
+        T closestEnum = null;
+        for (T value : values) {
+            int distance = StringUtils.levenshteinDistance(input, value.name());
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestEnum = value;
+            }
+        }
+        return closestEnum;
+    }
 }
