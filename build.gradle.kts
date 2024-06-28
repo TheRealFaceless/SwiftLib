@@ -23,6 +23,7 @@ dependencies {
     paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 }
 
+// Change Path
 tasks.jar {
     manifest.attributes(
         "Implementation-Title" to project.name,
@@ -32,12 +33,9 @@ tasks.jar {
     )
 
     val libPath = "C:\\Users\\Faceless\\Desktop\\Minecraft DevKit\\libraries"
-    val serverPath = "C:\\Users\\Faceless\\Desktop\\Minecraft DevKit\\Servers\\Purpur 1.20.6\\plugins"
-
-    val path = libPath
     val default = "${layout.buildDirectory}\\libs"
 
-    if (file(path).exists()) destinationDirectory.set(file(path))
+    if (file(libPath).exists()) destinationDirectory.set(file(libPath))
     else destinationDirectory.set(file(default))
 }
 
