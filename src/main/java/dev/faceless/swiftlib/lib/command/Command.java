@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,24 +54,26 @@ public class Command extends org.bukkit.command.Command {
             return true;
         } else {
             Method method = this.cachedCommandMethods.get("allArgs");
-            if(method == null) return true;
-            if(method.getParameterCount() == 1) {
-                ICommand annotation = method.getAnnotation(ICommand.class);
-                String permission = null;
-                if(annotation != null) {
-                    if(!annotation.permission().isEmpty() || !annotation.permission().isBlank()) permission = annotation.permission();
-                }
+            if(method != null) {
+                if (method.getParameterCount() == 1) {
+                    ICommand annotation = method.getAnnotation(ICommand.class);
+                    String permission = null;
+                    if (annotation != null) {
+                        if (!annotation.permission().isEmpty() || !annotation.permission().isBlank())
+                            permission = annotation.permission();
+                    }
 
-                if(permission != null) {
-                    if(sender.hasPermission(permission)) {
-                        try {
-                            method.invoke(this, context);
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new RuntimeException(e);
+                    if (permission != null) {
+                        if (sender.hasPermission(permission)) {
+                            try {
+                                method.invoke(this, context);
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
-                }
 
+                }
             }
         }
 
@@ -89,6 +92,7 @@ public class Command extends org.bukkit.command.Command {
             if(!sender.hasPermission(permission)) return true;
         }
         try {
+            if(SwiftLib.isDebugMode()) ConsoleLogger.logInfo("Invoking Command: " + name + " ,Args: " + Arrays.toString(args));
             method.invoke(this, context); // INVOKED HERE!
         } catch (IllegalAccessException | InvocationTargetException |
                  CommandException | IllegalArgumentException ignored) {}
