@@ -187,8 +187,9 @@ public class Command extends org.bukkit.command.Command {
         try {
             @SuppressWarnings("unchecked")
             List<String> completions = (List<String>) method.invoke(this, context); // INVOKED HERE!
-            completions.addAll(allArgsCompletions);
-            return completions;
+            List<String> mutableCompletions = new ArrayList<>(completions);
+            mutableCompletions.addAll(allArgsCompletions);
+            return mutableCompletions;
         } catch (IllegalAccessException | InvocationTargetException |
                  CommandException | IllegalArgumentException ignored) {}
         return List.of();
