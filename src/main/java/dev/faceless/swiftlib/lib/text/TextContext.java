@@ -5,13 +5,18 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SuppressWarnings({"unused", "deprecation"})
 public class TextContext {
 
     private final StringBuilder builder;
+
+    private static final Pattern pattern = Pattern.compile("&#[a-zA-Z0-9]{6}");
 
     public static final String BLACK = "black";
     public static final String DARK_BLUE = "dark_blue";
@@ -295,5 +300,27 @@ public class TextContext {
     public static String stripColorCodes(String input) {
         input = input.replaceAll("(?i)&[0-9A-FK-OR]", "");
         return input.replaceAll("(?i)§[0-9A-FK-OR]", "");
+    }
+
+    /**
+     * By Mantice
+     * @param input String text
+     * @return Component of translated input
+     */
+    public static @NotNull Component hexAndLegacy(@NotNull String input) {
+        Matcher matcher = pattern.matcher(input);
+
+        while (matcher.find()) {
+            final String hex = input.substring(matcher.start(), matcher.end());
+            final String replace = hex.replace("&#", "x");
+
+            final char[] chars = replace.toCharArray();
+            final StringBuilder builder = new StringBuilder();
+            for (final char c : chars) builder.append("&").append(c);
+
+            input = input.replace(hex, builder.toString());
+            matcher = pattern.matcher(input);
+        }
+        return formatLegacy(input);
     }
 }
